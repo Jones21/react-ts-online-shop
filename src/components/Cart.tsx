@@ -7,8 +7,7 @@ import storeItems from '../data/items.json'
 
 export function Cart() {
     const { show, handleShow, handleClose, cartItems, cartQuantity, clearCart } = useShoppingCart()
-
-    let items = Object.keys(cartItems).reverse()
+    const sortedItems = Object.keys(cartItems).reverse()
 
     return (
         <React.Fragment>
@@ -24,10 +23,10 @@ export function Cart() {
                     }
                 </Card.Header>
                 <Card.Body className="bg-light">
-                    {(items.length > 0) ?
+                    {(sortedItems.length > 0) ?
                         <React.Fragment>
                             <div className="p-4" style={{maxHeight: '300px', overflow: 'auto'}}>
-                                {items.map((item, index) => (
+                                {sortedItems.map((index: any) => (
                                     <CartItem key={cartItems[index].id} {...cartItems[index]} />
                                 ))}
                             </div>
