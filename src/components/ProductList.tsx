@@ -11,7 +11,7 @@ export function ProductList() {
         <React.Fragment>
             
             <Row xs={1} className="g-3">
-                { (storeItems.length) ? storeItems.map(item => (
+                { (storeItems.length) ? storeItems.map((item: JSX.IntrinsicAttributes & { id: string; productName: string; description: string; unitPrice: number; category: string; imageUrl: string }) => (
                     <Col key={item.id} className="bg-light p-5"><ProductItem {...item} /></Col>   
                 )) : <h4 className='text-center p-5 text-muted'>No search results found for "{activeSearchTerm}"</h4>}
             </Row>

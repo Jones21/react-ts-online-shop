@@ -13,6 +13,7 @@ type CartItemProps = {
 export function CartItem({ id, quantity}: CartItemProps ) {
     const { increaseCartQuantity, decreaseCartQuantity, removeFromCart } = useShoppingCart()
     const item = storeItems.find(item => item.id === id)
+    const itemUnitPrice = item?.unitPrice || 0
 
     return (
         <React.Fragment>
@@ -36,12 +37,12 @@ export function CartItem({ id, quantity}: CartItemProps ) {
                         <X size={50}/>
                     </Button>
                     <div className="text-center bg-white" style={ { width: '80px', overflow: 'hidden' } }>
-                        <img src={item.imageUrl} height="50px" style={{ objectFit: 'cover', width: 'auto' }} />
+                        <img src={item?.imageUrl} height="50px" style={{ objectFit: 'cover', width: 'auto' }} />
                     </div>
                 </Col>
                 <Col xs="6">
-                    <h6 className="text-truncate">{item.productName}</h6>
-                    <h6 className="text-danger fw-bold">{formatCurrency(item.unitPrice * quantity)}</h6>
+                    <h6 className="text-truncate">{item?.productName}</h6>
+                    <h6 className="text-danger fw-bold">{formatCurrency(itemUnitPrice * quantity)}</h6>
                 </Col>
                 <Col xs="3">
                     <div className="d-flex justify-content-center align-items-center">

@@ -8,18 +8,29 @@ type ShoppingCartProviderProps = {
 }
 
 type CartItem = {
-    id: number
+    id: string
     quantity: number
 }
 
 type ShoppingCartContext = {
-    getItemQuantity: (id: number) => number
-    increaseCartQuantity: (id: number) => void
-    decreaseCartQuantity: (id: number) => void
-    removeFromCart: (id: number) => void
+    getItemQuantity: (id: string) => number
+    increaseCartQuantity: (id: string) => void
+    decreaseCartQuantity: (id: string) => void
+    removeFromCart: (id: string) => void
+    getCategoryList: () => any
+    setCategory: (category: any) => void
     clearCart:() => void
+    handleShow: () => void
+    handleClose: () => void
+    getStoreItems: () => any
+    setPriceSort: (sort: any) => void
+    setSearchTerm: (term: any) => void
     cartQuantity: number
+    show: boolean
     cartItems: CartItem[]
+    activeCategory: any
+    activePriceSort: any
+    activeSearchTerm: any
 }
 
 const ShoppingCartContext = createContext({} as ShoppingCartContext)
@@ -49,11 +60,11 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
         0
     )
 
-    function getItemQuantity(id: number) {
+    function getItemQuantity(id: string) {
         return cartItems.find(item => item.id === id)?.quantity || 0
     }
 
-    function increaseCartQuantity(id: number) {
+    function increaseCartQuantity(id: string) {
         setCartItems(currItems => {
             if (currItems.find(item => item.id === id) == null) {
                 return [...currItems, { id, quantity: 1 }]
@@ -69,7 +80,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
         })
     }
 
-    function decreaseCartQuantity(id: number) {
+    function decreaseCartQuantity(id: string) {
         setCartItems(currItems => {
             if (currItems.find(item => item.id === id)?.quantity === 1) {
                 return currItems.filter(item => item.id !== id)
@@ -85,7 +96,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
         })
     }
 
-    function removeFromCart(id: number) {
+    function removeFromCart(id: string) {
         setCartItems(currItems => {
             return currItems.filter(item => item.id !== id)
         })
@@ -97,55 +108,58 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
         })
     }
 
-    function getCategoryList(items: Array) {
-        let categories = items.filter((item, index) => {
-            return items.findIndex(obj => obj.category === item.category) === index
+    function getCategoryList() {
+        let categories = storeItems.filter((item, index) => {
+            return storeItems.findIndex(obj => obj.category === item.category) === index
         });
         return categories
     }
 
-    function setCategory(category: string) {
+    function setCategory(category: any) {
         setActiveCategory(category)
     }
 
     function getStoreItems() {
-        let items = storeItems
+        let items      = storeItems
+        let searchTerm = (activeSearchTerm) ? (activeSearchTerm).toString() : ''
+        const sort     = (activePriceSort) ? (activePriceSort).toString() : ''
+        const category = (activeCategory) ? (activeCategory).toString() : ''
+
         
-        if (Object.keys(activeCategory).length && activeCategory != 'all') {
-            items = items.filter(item => item.category === activeCategory)
+        if (category != '' && category != 'all') {
+            items = items.filter(item => item.category === category)
         }
 
-        if (activeSearchTerm != '') {
+        if (searchTerm != '') {
             items = items.filter((item) => {
                 const productName = (item.productName).toLowerCase()
-                const searchTerm  = activeSearchTerm.toLowerCase()
-
-                return productName.includes(searchTerm)
+                return productName.includes(searchTerm.toLowerCase())
             })
         }
 
-        if (activePriceSort != '') {
-            switch (activePriceSort) {
+        if (sort != '') {
+            switch (sort) {
                 case 'asc' :
                     items.sort((a, b) => {
-                        return parseFloat(a.unitPrice) - parseFloat(b.unitPrice)
+                        return parseFloat((a.unitPrice).toString()) - parseFloat((b.unitPrice).toString())
                     })
                     break;
                 case 'desc':
                     items.sort((a, b) => {
-                        return parseFloat(b.unitPrice) - parseFloat(a.unitPrice)
+                        return parseFloat((b.unitPrice).toString()) - parseFloat((a.unitPrice).toString())
                     })
                     break;
             }
         }
+
         return items
     }
 
-    function setSearchTerm(term: string) {
+    function setSearchTerm(term: any) {
         setActiveSearchTerm(term)
     }
 
-    function setPriceSort(sort: string) {
+    function setPriceSort(sort: any) {
         setActivePriceSort(sort)
     }
 

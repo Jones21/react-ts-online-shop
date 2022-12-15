@@ -27,7 +27,7 @@ export function Cart() {
                     {(items.length > 0) ?
                         <React.Fragment>
                             <div className="p-4" style={{maxHeight: '300px', overflow: 'auto'}}>
-                                {items.map(index => (
+                                {items.map((item, index) => (
                                     <CartItem key={cartItems[index].id} {...cartItems[index]} />
                                 ))}
                             </div>
